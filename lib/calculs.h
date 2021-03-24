@@ -44,8 +44,9 @@ public:
 
     void createBrut(int numBrut);
     Q_INVOKABLE bool optimiser(ListeDebits *listeDbx);
+    void updateDebits();
     bool testFormats();
-   // bool optimiser_2();
+
 
     void trierDebits();
     void trierChuttes();
@@ -75,6 +76,7 @@ private:
     QList<Brut *> *m_listeChuttes;
     QList<Debit *> *m_listeDebits;
     Brut *formatDefaut;
+    ListeDebits *m_DebitsCalcules;
 
 
 };

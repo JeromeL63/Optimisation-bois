@@ -34,6 +34,7 @@ Calculs::Calculs(QList<Debit *> *listeDebits, Brut *formats, double ep_trait_de_
     m_listeDebits=new QList<Debit *>;
     m_listeBruts=new QList<Brut *>;
     m_listeChuttes=new QList<Brut *>;
+    m_DebitsCalcules=new ListeDebits;
 }
 
 void Calculs::createBrut(int numBrut)
@@ -53,6 +54,11 @@ void Calculs::createBrut(int numBrut)
 
 bool Calculs::optimiser(ListeDebits *listeDbx)
 {
+    ////TODO
+    /// utiliser setData de Liste Debit
+    /// créer les setData
+
+
     if(formatDefaut == nullptr){return false;}
 
     m_listeDebits=listeDbx->getListe();
@@ -188,28 +194,28 @@ bool Calculs::optimiser(ListeDebits *listeDbx)
                     m_listeChuttes->at(0)->setCoord_Y(y);
 
                     double nouvelleLong=0.0;
-                    nouvelleLong=m_listeChuttes->at(0)->getLong()-m_listeDebits->at(no_pan)->getLong()-m_ep_scie;
-                    m_listeChuttes->at(0)->setLong(nouvelleLong);
+                    nouvelleLong=m_listeChuttes->at(0)->getLongueur()-m_listeDebits->at(no_pan)->getLongueur()-m_ep_scie;
+                    m_listeChuttes->at(0)->setLongueur(nouvelleLong);
                     //qDebug()<<"Plaque après découpe:"<<m_listeChuttes->at(0)->getNumPlaque()<<"Lg :"<<m_listeChuttes->at(0)->getLong();
                 }
 
 
 
                 ///atribution n° plaque au panneau
-                m_listeDebits->at(no_pan)->setNumPlaque(m_listeChuttes->at(0)->getNumPlaque());
+                m_listeDebits->at(no_pan)->setNumBrut(m_listeChuttes->at(0)->getNumBrut());
                 m_listeDebits->at(no_pan)->setOptimise(true);
 
                 ///si l'épaisseur du trait de scie donne une valeur négative, on ramène la valeur à 0
-                if(m_listeChuttes->at(0)->getLong()<=0)
+                if(m_listeChuttes->at(0)->getLongueur()<=0)
                 {
-                    m_listeChuttes->at(0)->setLong(0);}
+                    m_listeChuttes->at(0)->setLongueur(0);}
 
            }
 
 
            for(int i=0;i<m_listeDebits->count();i++)
            {
-               if(!m_listeDebits->at(i)->isOptimise())
+               if(!m_listeDebits->at(i)->getOptimise())
                {
                     all_optimise=false;
                    break;
@@ -217,15 +223,16 @@ bool Calculs::optimiser(ListeDebits *listeDbx)
                else{all_optimise=true;}
            }
 
-
         }while(!all_optimise);
 
     }
 
-
-
-
     return true;
+}
+
+void Calculs::updateDebits()
+{
+
 }
 
 bool Calculs::testFormats()
