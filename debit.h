@@ -28,11 +28,50 @@
 #ifndef DEBIT_H
 #define DEBIT_H
 
+#include <QString>
+#include <QList>
+
 
 class Debit
 {
 public:
-    Debit();
+    Debit(QString nom_debit="",double larg=0, double lg=0, double ep=0,bool opti=false,int numplaque=0);
+
+    QString getNom() const;
+    void setNom(const QString &nom);
+
+    double getLargeur() const;
+    void setLargeur(double largeur);
+
+    double getEpaisseur() const;
+    void setEpaisseur(double epaisseur);
+
+    double getLongueur() const;
+    void setLongueur(double longueur);
+
+    bool getOptimise() const;
+    void setOptimise(bool optimise);
+
+    bool getRotation() const;
+    void setRotation(bool rotation);
+
+    bool getErreur() const;
+    void setErreur(bool erreur);
+
+    int getNumBrut() const;
+    void setNumBrut(int numBrut);
+
+    int getPosX() const;
+    void setPosX(int posX);
+
+    int getPosY() const;
+    void setPosY(int posY);
+
+private:
+    QString m_nom;
+    double m_largeur,m_epaisseur,m_longueur;
+    bool m_optimise,m_rotation,m_erreur;
+    int m_numBrut,m_posX,m_posY;
 };
 
 #endif // DEBIT_H

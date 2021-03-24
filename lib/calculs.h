@@ -28,11 +28,47 @@
 #ifndef CALCULS_H
 #define CALCULS_H
 
+#include <QList>
+#include "debit.h"
+#include "brut.h"
+#include "algorythm.h"
+
+
 
 class Calculs
 {
 public:
-    Calculs();
+    Calculs(QList<Debit*> *listeDebits,Brut* formats,double ep_trait_de_scie=10.0);
+
+    void createBrut(int numBrut);
+    bool optimiser(QList<Debit *> *listeDbx);
+    bool testFormats();
+    bool optimiser_2();
+
+    void trierDebits(QList<Debit *> listeDbx);
+    void trierBruts(QList<Brut *> listeBruts);
+
+
+    int getNbreBruts() const;
+    void setNbreBruts(int nbreBruts);
+
+    int rechercher(int dim_x,int dim_y);
+
+    Debit* getDebitMini();
+
+
+    QList<Debit *> *getListeDebits() const;
+
+private:
+    int m_nbreBruts;
+    double m_ep_scie;
+    double m_largFormat,m_longFormat,m_epFormat;
+    QList<Brut *> *m_listeBruts;
+    QList<Brut *> *m_listeChuttes;
+    QList<Debit *> *m_listeDebits;
+    Brut *formatDefaut;
+
+
 };
 
 #endif // CALCULS_H

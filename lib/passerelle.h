@@ -28,11 +28,17 @@
 #ifndef PASSERELLE_H
 #define PASSERELLE_H
 
+#include <QList>
+#include <QFile>
+#include <QTextStream>
+#include <debit.h>
+
 
 class Passerelle
 {
 public:
     Passerelle();
+    QList<Debit *> import(QString file);
 };
 
 #endif // PASSERELLE_H

@@ -27,7 +27,25 @@
 
 #include "calculs.h"
 
-Calculs::Calculs()
+
+Calculs::Calculs(QList<Debit *> *listeDebits, Brut *formats, double ep_trait_de_scie)
 {
 
+}
+
+
+
+int Calculs::getNbreBruts() const
+{
+    return m_nbreBruts;
+}
+
+void Calculs::setNbreBruts(int nbreBruts)
+{
+    m_nbreBruts = nbreBruts;
+}
+
+QList<Debit *> *Calculs::getListeDebits() const
+{
+    return m_listeDebits;
 }

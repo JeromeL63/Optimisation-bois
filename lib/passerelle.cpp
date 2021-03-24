@@ -28,6 +28,42 @@
 #include "passerelle.h"
 
 Passerelle::Passerelle()
+{    
+
+}
+
+QList<Debit *> Passerelle::import(QString file)
 {
+    ///import d'un fichier .csv de débits sous la forme:
+    /// Numéro de production ; Qté ; largeur ; longueur
+
+    QFile fichier(file);
+    QStringList tampon;tampon.clear();
+    fichier.open(QIODevice::ReadOnly | QIODevice::Text);
+    QTextStream in(&fichier);
+    do{
+        tampon<<in.readLine();
+
+    }while(!in.atEnd());
+
+    QList<Debit *> list;
+     for(int i=0;i<tampon.count();i++)
+     {
+         QString ligne=tampon.at(i);
+         QStringList t=ligne.split(';');
+         if(t.count()==4)
+         {
+             QString nombre(t.at(1));/// récupération du nombre de panneaux
+             int nbre=nombre.toInt();/// cast en int
+
+             for(int j=0;j<nbre;j++)
+             {
+                 ///insertion des panneaux dans la liste
+             Debit *p=new Debit(t.at(0),QString(t.at(2)).toDouble(),QString(t.at(3)).toDouble());
+                     list.append(p);
+             }
+         }
+     }
+     return list;
 
 }

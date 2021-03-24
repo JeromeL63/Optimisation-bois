@@ -27,7 +27,43 @@
 
 #include "debit.h"
 
-Debit::Debit()
+Debit::Debit(QString nom_debit, double larg, double lg, double ep, bool opti, int numplaque)
 {
+    m_nom=nom_debit;
+    m_largeur=larg;
+    m_longueur=lg;
+    m_epaisseur=ep;
+    m_optimise=opti;
+    m_numBrut=numplaque;
 
 }
+
+QString Debit::getNom() const{return m_nom;}
+void Debit::setNom(const QString &nom){m_nom = nom;}
+
+double Debit::getLargeur() const{return m_largeur;}
+void Debit::setLargeur(double largeur){m_largeur = largeur;}
+
+double Debit::getEpaisseur() const{return m_epaisseur;}
+void Debit::setEpaisseur(double epaisseur){m_epaisseur = epaisseur;}
+
+double Debit::getLongueur() const{return m_longueur;}
+void Debit::setLongueur(double longueur){m_longueur = longueur;}
+
+bool Debit::getOptimise() const{return m_optimise;}
+void Debit::setOptimise(bool optimise){m_optimise = optimise;}
+
+bool Debit::getRotation() const{return m_rotation;}
+void Debit::setRotation(bool rotation){m_rotation = rotation;}
+
+bool Debit::getErreur() const{return m_erreur;}
+void Debit::setErreur(bool erreur){m_erreur = erreur;}
+
+int Debit::getNumBrut() const{return m_numBrut;}
+void Debit::setNumBrut(int numBrut){m_numBrut = numBrut;}
+
+int Debit::getPosX() const{return m_posX;}
+void Debit::setPosX(int posX){m_posX = posX;}
+
+int Debit::getPosY() const{return m_posY;}
+void Debit::setPosY(int posY){m_posY = posY;}
