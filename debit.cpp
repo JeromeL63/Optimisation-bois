@@ -28,7 +28,7 @@
 #include "debit.h"
 #include <QDebug>
 
-Debit::Debit(QString nom_debit, double larg, double lg, double ep, bool opti, int numBrut)
+Debit::Debit(QString nom_debit, double larg, double lg, double ep, bool opti, int numBrut, bool erreur)
 {
     m_nom=nom_debit;
     m_largeur=larg;
@@ -36,6 +36,7 @@ Debit::Debit(QString nom_debit, double larg, double lg, double ep, bool opti, in
     m_epaisseur=ep;
     m_optimise=opti;
     m_numBrut=numBrut;
+    m_erreur=erreur;
 
 }
 

@@ -43,7 +43,7 @@ public:
     Calculs(QList<Debit*> *listeDebits=nullptr,Brut* formats=nullptr,double ep_trait_de_scie=10.0);
 
     void createBrut(int numBrut);
-    Q_INVOKABLE bool optimiser(ListeDebits *listeDbx);
+    Q_INVOKABLE int optimiser(ListeDebits *listeDbx);
     void updateDebits();
     bool testFormats();
 
@@ -65,6 +65,9 @@ public:
 
 
     Q_INVOKABLE void setFormatDefaut(Brut *value);
+    Q_INVOKABLE double getFormatDefautLargeur();
+    Q_INVOKABLE double getFormatDefautLongueur();
+
 
     Q_INVOKABLE void setEp_scie(double ep_scie);
 

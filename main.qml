@@ -134,7 +134,9 @@ Window {
             Button{
                 text:"Optimiser"
                 onClicked: {
-                    calculs.optimiser(listeDebits)
+                    var isOptimised=calculs.optimiser(listeDebits)
+                    console.log(isOptimised)
+                    if(isOptimised == 2){console.log(calculs.getFormatDefautLargeur(),calculs.getFormatDefautLongueur())}
                 }
             }
 

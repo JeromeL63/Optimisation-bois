@@ -58,6 +58,7 @@ Dialog {
                 TextField{
                     ///TODO regexp seulement accepter un double
                     id:txt_largeur
+                    text:"200"
                 }
             }
             ColumnLayout{
@@ -66,6 +67,7 @@ Dialog {
                 }
                 TextField{
                     id:txt_longueur
+                    text: "10000"
                 }
             }
         }

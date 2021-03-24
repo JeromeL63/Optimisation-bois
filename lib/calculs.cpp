@@ -35,12 +35,13 @@ Calculs::Calculs(QList<Debit *> *listeDebits, Brut *formats, double ep_trait_de_
     m_listeBruts=new QList<Brut *>;
     m_listeChuttes=new QList<Brut *>;
     m_DebitsCalcules=new ListeDebits;
+
 }
 
 void Calculs::createBrut(int numBrut)
-{
-    Brut *pl=new Brut;
-    pl=formatDefaut;
+{    
+    Brut *pl=new Brut(m_largFormat,m_longFormat,m_epFormat);
+    //pl=formatDefaut;
     pl->setCoord_X(0);
     pl->setCoord_Y(0);
 
@@ -52,14 +53,17 @@ void Calculs::createBrut(int numBrut)
 
 }
 
-bool Calculs::optimiser(ListeDebits *listeDbx)
+int Calculs::optimiser(ListeDebits *listeDbx)
 {
     ////TODO
     /// utiliser setData de Liste Debit
     /// créer les setData
+    ///return error:
+    /// 1 : pas de format par défaut
+    /// 2: panneaux exèdent le format de base
 
 
-    if(formatDefaut == nullptr){return false;}
+    if(formatDefaut == nullptr){return 1;}
 
     m_listeDebits=listeDbx->getListe();
     ///reset des optimisations
@@ -68,8 +72,9 @@ bool Calculs::optimiser(ListeDebits *listeDbx)
     m_listeBruts->clear();
     ///vidage de la liste des chutes
     m_listeChuttes->clear();
-    ///TEST des panneaux exédant le format de base
-    if(!testFormats()){return false;}
+    ///TEST des panneaux excedant le format de base
+    if(!testFormats()){return 2;}
+    qDebug()<<"formats OK";
 
     m_nbreBruts=1;
     int x=0;
@@ -82,6 +87,7 @@ bool Calculs::optimiser(ListeDebits *listeDbx)
 
         ///les débits sont triés par largeur et longueurs décroissantes
         trierDebits();
+        qDebug()<<"tris débits OK";
 
         bool all_optimise=false;
         bool deuxieme_part=false;
@@ -96,6 +102,7 @@ bool Calculs::optimiser(ListeDebits *listeDbx)
 
  ///triage des bout de plaques restant par ordre croissant
     trierChuttes();
+    qDebug()<<"tris des chuttes";
 
             do///tant que le panneau ne rentre pas dans une chutte de plaque
             {
@@ -227,7 +234,8 @@ bool Calculs::optimiser(ListeDebits *listeDbx)
 
     }
 
-    return true;
+    qDebug()<<"fin optimisation";
+    return 0;
 }
 
 void Calculs::updateDebits()
@@ -245,7 +253,7 @@ bool Calculs::testFormats()
         lgform=formatDefaut->getLongueur();
         bool sortie= true;
 
-        //qDebug()<<"TEST des formats :"<<laform<<"x"<<lgform;
+        qDebug()<<"TEST des formats :"<<laform<<"x"<<lgform;
         for(int i=0;i<m_listeDebits->count();i++)
         {
             double lapan,lgpan;
@@ -260,7 +268,8 @@ bool Calculs::testFormats()
                 t.append(m_listeDebits->at(i)->getNom()+" ("+QString().setNum(lapan)+"x"+QString().setNum(lgpan)+"mm)");
                 ///depassement de dimension
                 t.append(" dépasse le format de la plaque \n Faut-il le retourner ?");
-                int decision=0;
+                qDebug()<<t;
+              /*  int decision=0;
                 switch (decision) {
                 case 1:
                     m_listeDebits->at(i)->setLargeur(lgpan);
@@ -275,13 +284,14 @@ bool Calculs::testFormats()
                 default:
                     m_listeDebits->at(i)->setErreur(true);
                     break;
-                }
+                }*/
             }
 
         }
 
         for(int i=0;i<m_listeDebits->count();i++){
             if(m_listeDebits->at(i)->getErreur()){sortie=false;}
+            qDebug()<<m_listeDebits->at(i)->getErreur()<<m_listeDebits->at(i)->getLargeur()<<m_listeDebits->at(i)->getLongueur();
         }
 
         return sortie;
@@ -316,12 +326,15 @@ void Calculs::trierDebits()
 
 void Calculs::trierChuttes()
 {
+    qDebug()<<"tris de chuttes";
      QList<Brut *> *list=new QList<Brut *>;
      list=m_listeChuttes;
 
      Algorythm *alg=new Algorythm;
      ///creation d'une liste de _2values
      QList<_2values*> *tableau=new QList<_2values*>;
+
+     qDebug()<<"Algorythme et tableau de 2values créés";
 
      ///envoie des valeurs largeur et longueur dans un _2values
      for(int i=0;i<list->count();i++)
@@ -333,15 +346,20 @@ void Calculs::trierChuttes()
      }
      ///envoie de la liste dans l'algorythme de tri
      alg->setValues(tableau);
+     qDebug()<<"Valeurs triées dans l'algorythme";
      QList<int> indexs=alg->Trier(false);///recupération des index du tableau une fois trié
 
     m_listeChuttes->clear();
      ///mise en ordre de la liste suivant les index de tableau fournit
+     qDebug()<<"Mise en ordre liste suivant indexes";
      for(int i=0;i<indexs.count();i++){m_listeChuttes->append(list->at(indexs.at(i)));}
 
 
      ///suppression des plaque avec longueur 0
+     qDebug()<<"suppression plaques longueur = 0";
+     qDebug()<<m_listeChuttes->at(0);
      if(m_listeChuttes->at(0)->getLongueur()<=0.0){m_listeChuttes->removeFirst();}
+     qDebug()<<"sortie tris chuttes";
 }
 
 
@@ -396,6 +414,21 @@ int Calculs::rechercher(int dim_x, int dim_y)
 
 QList<Debit *> *Calculs::getListeDebits() const{return m_listeDebits;}
 
-void Calculs::setFormatDefaut(Brut *value){formatDefaut = value;}
+void Calculs::setFormatDefaut(Brut *value){
+    formatDefaut = value;
+    m_largFormat= formatDefaut->getLargeur();
+    m_longFormat=formatDefaut->getLongueur();
+}
+
+double Calculs::getFormatDefautLargeur()
+{
+    return m_largFormat;
+}
+
+double Calculs::getFormatDefautLongueur()
+{
+    return m_longFormat;
+
+}
 
 void Calculs::setEp_scie(double ep_scie){m_ep_scie = ep_scie;}

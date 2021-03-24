@@ -42,7 +42,7 @@ class Debit
     //Q_PROPERTY(QString nom READ getNom WRITE setNom)
 
 public:
-    Debit(QString nom_debit="",double larg=0, double lg=0, double ep=0,bool opti=false,int numBrut=0);
+    Debit(QString nom_debit="",double larg=0, double lg=0, double ep=0,bool opti=false,int numBrut=0,bool erreur=false);
 
  /*   enum DebitRoles{
         nomRole=Qt::UserRole,
