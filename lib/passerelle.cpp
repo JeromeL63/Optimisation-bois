@@ -26,18 +26,19 @@
 */
 
 #include "passerelle.h"
+#include <QDebug>
 
-Passerelle::Passerelle()
-{    
-
+Passerelle::Passerelle(ListeDebits *liste, QObject *parent)
+{
+    m_liste=liste;
 }
 
-QList<Debit *> Passerelle::import(QString file)
+void Passerelle::import(QUrl file)
 {
     ///import d'un fichier .csv de débits sous la forme:
     /// Numéro de production ; Qté ; largeur ; longueur
 
-    QFile fichier(file);
+    QFile fichier(file.toLocalFile());
     QStringList tampon;tampon.clear();
     fichier.open(QIODevice::ReadOnly | QIODevice::Text);
     QTextStream in(&fichier);
@@ -64,6 +65,9 @@ QList<Debit *> Passerelle::import(QString file)
              }
          }
      }
-     return list;
-
+     //return list;
+     m_liste->setListe(list);
+     qDebug()<<m_liste->rowCount();
 }
+
+

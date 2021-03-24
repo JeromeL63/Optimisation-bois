@@ -30,15 +30,23 @@
 
 #include <QList>
 #include <QFile>
+#include <QUrl>
 #include <QTextStream>
-#include <debit.h>
+#include <QObject>
+#include "debit.h"
 
 
-class Passerelle
+class Passerelle :public QObject
 {
+    Q_OBJECT
 public:
-    Passerelle();
-    QList<Debit *> import(QString file);
+    Passerelle(ListeDebits *liste,QObject *parent=nullptr);
+
+    Q_INVOKABLE  void import(QUrl file);
+
+private:
+    ListeDebits *m_liste;
+
 };
 
 #endif // PASSERELLE_H

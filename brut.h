@@ -32,7 +32,32 @@
 class Brut
 {
 public:
-    Brut();
+    Brut(double larg=0, double lg=0, double ep=0, int num=1);
+
+    double getLargeur() const;
+    void setLargeur(double largeur);
+
+    double getLongueur() const;
+    void setLongueur(double longueur);
+
+    double getEpaisseur() const;
+    void setEpaisseur(double epaisseur);
+
+    double getNumBrut() const;
+    void setNumBrut(double numBrut);
+
+    double getCoord_X() const;
+    void setCoord_X(double coord_X);
+
+    double getCoord_Y() const;
+    void setCoord_Y(double coord_Y);
+
+    double getRebus() const;
+    void retraitRebus(double surface);
+
+
+private:
+    double m_largeur,m_longueur,m_epaisseur,m_numBrut,m_coord_X,m_coord_Y,m_rebus;
 };
 
 #endif // BRUT_H

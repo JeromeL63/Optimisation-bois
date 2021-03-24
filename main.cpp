@@ -28,14 +28,34 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlEngine>
+#include <QQmlContext>
 
-int main(int argc, char *argv[])
+#include "debit.h"
+#include "brut.h"
+#include "lib/passerelle.h"
+#include "lib/calculs.h"
+
+int main(int argc, char ** argv)
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
     QGuiApplication app(argc, argv);
 
+    app.setOrganizationName("Optimisation-Bois");
+    app.setOrganizationDomain("Wood&Co");
+
     QQmlApplicationEngine engine;
+
+
+    ///insertion des listes dans la partie QML
+    ListeDebits *lstdbt=new ListeDebits;
+    engine.rootContext()->setContextProperty("listeDebits",QVariant::fromValue(lstdbt));
+
+    ///création de l'objet import
+    Passerelle *p=new Passerelle(lstdbt);
+    engine.rootContext()->setContextProperty("outil_importer",p);
+
+
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {

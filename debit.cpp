@@ -26,17 +26,20 @@
 */
 
 #include "debit.h"
+#include <QDebug>
 
-Debit::Debit(QString nom_debit, double larg, double lg, double ep, bool opti, int numplaque)
+Debit::Debit(QString nom_debit, double larg, double lg, double ep, bool opti, int numBrut)
 {
     m_nom=nom_debit;
     m_largeur=larg;
     m_longueur=lg;
     m_epaisseur=ep;
     m_optimise=opti;
-    m_numBrut=numplaque;
+    m_numBrut=numBrut;
 
 }
+
+
 
 QString Debit::getNom() const{return m_nom;}
 void Debit::setNom(const QString &nom){m_nom = nom;}
@@ -67,3 +70,113 @@ void Debit::setPosX(int posX){m_posX = posX;}
 
 int Debit::getPosY() const{return m_posY;}
 void Debit::setPosY(int posY){m_posY = posY;}
+
+
+
+
+ListeDebits::ListeDebits(QObject *parent)
+{
+    Q_UNUSED(parent)
+
+}
+
+///utilisé pour le model QML
+QHash<int, QByteArray> ListeDebits::roleNames() const {
+    QHash<int, QByteArray> roles;
+    roles[nomRole] = "nom";
+    roles[largeurRole] = "largeur";
+    roles[longueurRole] = "longueur";
+    roles[epaisseurRole] = "epaisseur";
+    roles[optimiseRole] = "optimise";
+    roles[numBrutRole] = "num_brut";
+    roles[erreurRole] ="erreur";
+
+    return roles;
+}
+
+
+int ListeDebits::rowCount(const QModelIndex &parent) const
+{
+    Q_UNUSED(parent);
+    return m_liste.count();
+
+}
+
+QVariant ListeDebits::data(const QModelIndex &index, int role) const
+{
+    qDebug()<<role<<nomRole;
+    QVariant value;
+        if (index.isValid()) {
+            if (role < Qt::UserRole) {
+                qDebug()<<"role inférieur à Qt::userrole";
+            } else {
+                const Debit *d= m_liste.at(index.row());
+                switch(role){
+                default:
+                    break;
+
+                case nomRole:
+                    value=d->getNom();
+                    break;
+                case largeurRole:
+                    value=d->getLargeur();
+                    break;
+                case longueurRole:
+                    value=d->getLongueur();
+                    break;
+                case epaisseurRole:
+                    value=d->getEpaisseur();
+                    break;
+                case optimiseRole:
+                    value=d->getOptimise();
+                    break;
+                case numBrutRole:
+                    value=d->getNumBrut();
+                    break;
+                case erreurRole:
+                    value=d->getErreur();
+                    break;
+
+                }
+            }
+        }
+        return value;
+}
+
+bool ListeDebits::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if(index.row()<0 || index.row() > m_liste.count()){return false;}
+    if(role == Qt::EditRole){
+
+        ///TODO
+
+        emit dataChanged(index,index,{role});
+        return true;
+    }
+    else return false;
+
+}
+
+void ListeDebits::setListe(const QList<Debit *> &liste)
+{
+    ///vidage du model
+    this->beginRemoveRows(QModelIndex(),0,rowCount());
+    m_liste.clear();
+    this->endRemoveRows();
+    ///insertion des nouvelles lignes
+    this->beginInsertRows(QModelIndex(),0,liste.count());
+    m_liste = liste;
+    this->endInsertRows();
+    ///information au QML que le model a changé
+    emit dataChanged(QModelIndex(),QModelIndex());
+}
+
+
+
+void ListeDebits::append(Debit *d)
+{
+
+    m_liste.append(d);
+
+
+}

@@ -43,3 +43,6 @@ HEADERS += \
     lib/algorythm.h \
     lib/calculs.h \
     lib/passerelle.h
+
+DISTFILES += \
+    csv_exemple.csv

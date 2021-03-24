@@ -30,12 +30,30 @@
 
 #include <QString>
 #include <QList>
+#include <QHash>
+#include <QByteArray>
+#include <QObject>
+#include <QAbstractListModel>
 
 
 class Debit
 {
+    //Q_OBJECT
+    //Q_PROPERTY(QString nom READ getNom WRITE setNom)
+
 public:
-    Debit(QString nom_debit="",double larg=0, double lg=0, double ep=0,bool opti=false,int numplaque=0);
+    Debit(QString nom_debit="",double larg=0, double lg=0, double ep=0,bool opti=false,int numBrut=0);
+
+ /*   enum DebitRoles{
+        nomRole=Qt::UserRole,
+        largeurRole=Qt::UserRole +1,
+        longueurRole=Qt::UserRole +2,
+        epaisseurRole=Qt::UserRole +3,
+        optimiseRole=Qt::UserRole +4,
+        numBrutRole=Qt::UserRole +5
+    };*/
+
+
 
     QString getNom() const;
     void setNom(const QString &nom);
@@ -73,5 +91,40 @@ private:
     bool m_optimise,m_rotation,m_erreur;
     int m_numBrut,m_posX,m_posY;
 };
+
+
+class ListeDebits : public QAbstractListModel
+{
+    Q_OBJECT
+public:
+       enum DebitRoles{
+           nomRole=Qt::UserRole,
+           largeurRole=Qt::UserRole +1,
+           longueurRole=Qt::UserRole +2,
+           epaisseurRole=Qt::UserRole +3,
+           optimiseRole=Qt::UserRole +4,
+           numBrutRole=Qt::UserRole +5,
+           erreurRole=Qt::UserRole +6
+       };
+
+    ListeDebits(QObject *parent=nullptr);
+
+    int rowCount(const QModelIndex & parent = QModelIndex()) const;
+    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    bool setData(const QModelIndex & index,const QVariant &value, int role = Qt::EditRole);
+
+    void append(Debit* d);
+
+
+    void setListe(const QList<Debit *> &liste);
+
+protected:
+    QHash<int, QByteArray> roleNames() const;
+
+private :
+    QList<Debit *> m_liste;
+
+};
+
 
 #endif // DEBIT_H

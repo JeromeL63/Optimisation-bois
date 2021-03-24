@@ -29,9 +29,11 @@
 
 import QtQuick 2.14
 import QtQuick.Window 2.14
-import QtQuick.Layouts 1.12
-import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.13
+import QtQuick.Controls 2.13
 import QtQuick.Controls 1.4 as Separate
+import QtQuick.Dialogs 1.2
+
 
 Window {
     id:main_window
@@ -40,29 +42,60 @@ Window {
     height: 600
     title: qsTr("Optimisation")
 
+    Loader{
+        id:importer
+        active:false
+        sourceComponent: FileDialog{
+            id:f_importer
+
+            title: "Choix du fichier .csv"
+            nameFilters: {"*.csv"}
+
+            onAccepted: {
+                console.log("You chose: " + f_importer.fileUrl)
+                outil_importer.import(f_importer.fileUrl)
+                importer.active=false
+            }
+            onRejected:{
+                importer.active=false
+            }
+
+            Component.onCompleted: visible =true
+        }
+
+
+    }
+
     RowLayout{
         anchors.fill: parent
         ColumnLayout{
             Separate.TableView{
                 Layout.preferredWidth: main_window.width/2
+                Layout.fillHeight: true
+                model: listeDebits
                 Separate.TableViewColumn{
                     title:"N° prod"
+                    role:"nom"
                     width:75
                 }
                 Separate.TableViewColumn{
                     title:"largeur"
+                    role:"largeur"
                     width:75
                 }
                 Separate.TableViewColumn{
                     title:"longueur"
+                    role:"longueur"
                     width:75
                 }
-                Separate.TableViewColumn{
+              /*  Separate.TableViewColumn{
                     title:"Optimisé"
+                    role:
                     width:75
-                }
+                }*/
                 Separate.TableViewColumn{
-                    title:"N° brute"
+                    title:"N° pièce brute"
+                    role:"num_brut"
                     width:75
                 }
             }
@@ -71,6 +104,7 @@ Window {
             }
             Button{
                 text:"Importer une liste de Débits"
+                onClicked: importer.active=true
             }
             Button{
                 text:"Optimiser"
