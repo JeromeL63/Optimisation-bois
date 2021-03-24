@@ -25,47 +25,72 @@
 # ***************************************************************************
 */
 
-#ifndef BRUT_H
-#define BRUT_H
-#include <QObject>
+import QtQuick 2.12
+import QtQuick.Controls 2.5
+import QtQuick.Layouts 1.3
+
+Dialog {
+    title:"Format des pièces brutes"
+    id:brut_dialog
+    modal:true
+    height: 250
+    property double largeur
+    property double longueur
 
 
-class Brut :public QObject
-{
-    Q_OBJECT;
-    Q_PROPERTY(double largeur READ getLargeur WRITE setLargeur NOTIFY largeurChanged)
-    Q_PROPERTY(double longueur READ getLongueur WRITE setLongueur NOTIFY longueurChanged)
-public:
-    Brut(double larg=0, double lg=0, double ep=0, int num=1);
+    onAccepted: {
+        largeur=txt_largeur.text;
+        longueur=txt_longueur.text;
+    }
+    onRejected: {
 
-    double getLargeur() const;
-    void setLargeur(double largeur);
+    }
 
-    double getLongueur() const;
-    void setLongueur(double longueur);
+    ColumnLayout{
+        anchors.fill: parent
+        anchors.margins:5
+        RowLayout{
+            Layout.fillWidth: true
+            ColumnLayout{
+                Text {
+                    text:"Largeur"
+                }
+                TextField{
+                    ///TODO regexp seulement accepter un double
+                    id:txt_largeur
+                }
+            }
+            ColumnLayout{
+                Text{
+                    text: "Longueur"
+                }
+                TextField{
+                    id:txt_longueur
+                }
+            }
+        }
 
-    double getEpaisseur() const;
-    void setEpaisseur(double epaisseur);
+    }
+    footer: ColumnLayout{
+        RowLayout{
+            Layout.fillWidth:true
+            Layout.preferredHeight: 40
+            Layout.margins: 5
 
-    double getNumBrut() const;
-    void setNumBrut(double numBrut);
+            Item {Layout.fillWidth: true}
 
-    double getCoord_X() const;
-    void setCoord_X(double coord_X);
+            Button{
+                text: "OK"
+                icon.name: "dialog-ok"
+                onClicked:accept()
 
-    double getCoord_Y() const;
-    void setCoord_Y(double coord_Y);
+            }
+            Button{
+                text: "Annuler"
+                icon.name: "dialog-cancel"
+                onClicked: reject()
+            }
+        }
+    }
 
-    double getRebus() const;
-    void retraitRebus(double surface);
-
-signals:
-    void largeurChanged();
-    void longueurChanged();
-
-
-private:
-    double m_largeur,m_longueur,m_epaisseur,m_numBrut,m_coord_X,m_coord_Y,m_rebus;
-};
-
-#endif // BRUT_H
+}

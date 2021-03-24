@@ -77,6 +77,7 @@ void Debit::setPosY(int posY){m_posY = posY;}
 ListeDebits::ListeDebits(QObject *parent)
 {
     Q_UNUSED(parent)
+    m_liste=new QList<Debit *>;
 
 }
 
@@ -95,22 +96,25 @@ QHash<int, QByteArray> ListeDebits::roleNames() const {
 }
 
 
+
+
+
 int ListeDebits::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return m_liste.count();
+    return m_liste->count();
 
 }
 
 QVariant ListeDebits::data(const QModelIndex &index, int role) const
 {
-    qDebug()<<role<<nomRole;
+
     QVariant value;
         if (index.isValid()) {
             if (role < Qt::UserRole) {
                 qDebug()<<"role inférieur à Qt::userrole";
             } else {
-                const Debit *d= m_liste.at(index.row());
+                const Debit *d= m_liste->at(index.row());
                 switch(role){
                 default:
                     break;
@@ -145,7 +149,7 @@ QVariant ListeDebits::data(const QModelIndex &index, int role) const
 
 bool ListeDebits::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if(index.row()<0 || index.row() > m_liste.count()){return false;}
+    if(index.row()<0 || index.row() > m_liste->count()){return false;}
     if(role == Qt::EditRole){
 
         ///TODO
@@ -157,14 +161,21 @@ bool ListeDebits::setData(const QModelIndex &index, const QVariant &value, int r
 
 }
 
-void ListeDebits::setListe(const QList<Debit *> &liste)
+
+QList<Debit *> *ListeDebits::getListe() const
+{
+    return m_liste;
+}
+
+
+void ListeDebits::setListe(QList<Debit *> *liste)
 {
     ///vidage du model
     this->beginRemoveRows(QModelIndex(),0,rowCount());
-    m_liste.clear();
+    m_liste->clear();
     this->endRemoveRows();
     ///insertion des nouvelles lignes
-    this->beginInsertRows(QModelIndex(),0,liste.count());
+    this->beginInsertRows(QModelIndex(),0,liste->count());
     m_liste = liste;
     this->endInsertRows();
     ///information au QML que le model a changé
@@ -175,8 +186,8 @@ void ListeDebits::setListe(const QList<Debit *> &liste)
 
 void ListeDebits::append(Debit *d)
 {
+/*
+    m_liste->append(d);
 
-    m_liste.append(d);
-
-
+*/
 }

@@ -47,13 +47,30 @@ int main(int argc, char ** argv)
     QQmlApplicationEngine engine;
 
 
-    ///insertion des listes dans la partie QML
+    ///insertion des listes de débit dans la partie QML
     ListeDebits *lstdbt=new ListeDebits;
+
     engine.rootContext()->setContextProperty("listeDebits",QVariant::fromValue(lstdbt));
+
+
 
     ///création de l'objet import
     Passerelle *p=new Passerelle(lstdbt);
+    ///accès au fonction dans la partie QML
     engine.rootContext()->setContextProperty("outil_importer",p);
+
+
+
+
+    ///création d'une pièce brut par défaut
+    Brut *defaut_brut=new Brut();
+    engine.rootContext()->setContextProperty("defaut_brut",defaut_brut);
+
+
+    ///création de la partie calculs
+    Calculs *resultats=new Calculs();
+    engine.rootContext()->setContextProperty("calculs",resultats);
+    qDebug()<<"done";
 
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));

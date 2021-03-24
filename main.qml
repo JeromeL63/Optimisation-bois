@@ -52,7 +52,6 @@ Window {
             nameFilters: {"*.csv"}
 
             onAccepted: {
-                console.log("You chose: " + f_importer.fileUrl)
                 outil_importer.import(f_importer.fileUrl)
                 importer.active=false
             }
@@ -62,12 +61,32 @@ Window {
 
             Component.onCompleted: visible =true
         }
+    }
+
+    Loader{
+        id:formats
+        active: false
+        sourceComponent: Format_Brut{
+            id:f_formats
+            visible: true
+            onAccepted: {
+                ///récupération du format brut
+                defaut_brut.longueur=f_formats.longueur
+                defaut_brut.largeur=f_formats.largeur
+                /// remplissage de la partie calculs
+                calculs.setFormatDefaut(defaut_brut);
+                calculs.setEp_scie(10.0);
 
 
+                formats.active=false
+            }
+            onRejected: formats.acitve=false
+        }
     }
 
     RowLayout{
         anchors.fill: parent
+        anchors.margins:5
         ColumnLayout{
             Separate.TableView{
                 Layout.preferredWidth: main_window.width/2
@@ -100,16 +119,24 @@ Window {
                 }
             }
             Button{
-                text:"Ajouter un débit"
-            }
-            Button{
                 text:"Importer une liste de Débits"
                 onClicked: importer.active=true
             }
             Button{
-                text:"Optimiser"
+                text:"Ajouter un débit"
+            }
+            Button{
+                text:"format de pièce brute"
+                onClicked: formats.active=true
+
             }
 
+            Button{
+                text:"Optimiser"
+                onClicked: {
+                    calculs.optimiser(listeDebits)
+                }
+            }
 
         }
         Item {

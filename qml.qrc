@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>Format_Brut.qml</file>
     </qresource>
 </RCC>

@@ -29,24 +29,26 @@
 #define CALCULS_H
 
 #include <QList>
+#include <QObject>
 #include "debit.h"
 #include "brut.h"
 #include "algorythm.h"
 
 
 
-class Calculs
+class Calculs :public QObject
 {
+    Q_OBJECT
 public:
-    Calculs(QList<Debit*> *listeDebits,Brut* formats,double ep_trait_de_scie=10.0);
+    Calculs(QList<Debit*> *listeDebits=nullptr,Brut* formats=nullptr,double ep_trait_de_scie=10.0);
 
     void createBrut(int numBrut);
-    bool optimiser(QList<Debit *> *listeDbx);
+    Q_INVOKABLE bool optimiser(ListeDebits *listeDbx);
     bool testFormats();
-    bool optimiser_2();
+   // bool optimiser_2();
 
-    void trierDebits(QList<Debit *> listeDbx);
-    void trierBruts(QList<Brut *> listeBruts);
+    void trierDebits();
+    void trierChuttes();
 
 
     int getNbreBruts() const;
@@ -58,6 +60,12 @@ public:
 
 
     QList<Debit *> *getListeDebits() const;
+
+
+
+    Q_INVOKABLE void setFormatDefaut(Brut *value);
+
+    Q_INVOKABLE void setEp_scie(double ep_scie);
 
 private:
     int m_nbreBruts;

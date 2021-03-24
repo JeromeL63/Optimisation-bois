@@ -47,7 +47,7 @@ void Passerelle::import(QUrl file)
 
     }while(!in.atEnd());
 
-    QList<Debit *> list;
+    QList<Debit *> *list=new QList<Debit *>;
      for(int i=0;i<tampon.count();i++)
      {
          QString ligne=tampon.at(i);
@@ -61,7 +61,7 @@ void Passerelle::import(QUrl file)
              {
                  ///insertion des panneaux dans la liste
              Debit *p=new Debit(t.at(0),QString(t.at(2)).toDouble(),QString(t.at(3)).toDouble());
-                     list.append(p);
+                     list->append(p);
              }
          }
      }

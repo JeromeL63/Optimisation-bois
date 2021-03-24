@@ -96,6 +96,7 @@ private:
 class ListeDebits : public QAbstractListModel
 {
     Q_OBJECT
+    Q_PROPERTY(QList<Debit*> *liste READ getListe WRITE setListe NOTIFY listeChanged)
 public:
        enum DebitRoles{
            nomRole=Qt::UserRole,
@@ -116,13 +117,17 @@ public:
     void append(Debit* d);
 
 
-    void setListe(const QList<Debit *> &liste);
+    Q_INVOKABLE QList<Debit *> *getListe() const;
+    void setListe(QList<Debit *> *liste);
+
+signals:
+    void listeChanged();
 
 protected:
     QHash<int, QByteArray> roleNames() const;
 
 private :
-    QList<Debit *> m_liste;
+    QList<Debit *> *m_liste;
 
 };
 
