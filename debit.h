@@ -115,6 +115,12 @@ public:
     bool setData(const QModelIndex & index,const QVariant &value, int role = Qt::EditRole);
 
     void append(Debit* d);
+    Q_INVOKABLE int getNumBrut(int index);
+    Q_INVOKABLE int getPosX(int index);
+    Q_INVOKABLE int getPosY(int index);
+    Q_INVOKABLE QString getNom(int index);
+    Q_INVOKABLE double getLargeur(int index);
+    Q_INVOKABLE double getLongueur(int index);
 
 
     Q_INVOKABLE QList<Debit *> *getListe() const;

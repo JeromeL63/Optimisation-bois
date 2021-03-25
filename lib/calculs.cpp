@@ -64,8 +64,9 @@ int Calculs::optimiser(ListeDebits *listeDbx)
 
 
     if(formatDefaut == nullptr){return 1;}
+    m_listeDebits->clear();
 
-    m_listeDebits=listeDbx->getListe();
+    *m_listeDebits<<*listeDbx->getListe();
     ///reset des optimisations
     for(int i=0;i<m_listeDebits->count();i++){m_listeDebits->at(i)->setOptimise(false);}
     ///vidage de la liste de pièces brutes
@@ -100,11 +101,11 @@ int Calculs::optimiser(ListeDebits *listeDbx)
            // qDebug()<<"Plaque "<<nbreplaques<<" reste :"<<m_listeChuttes->at(0)->getLong()<<"mm";
 
 
- ///triage des bout de plaques restant par ordre croissant
-    trierChuttes();
-    qDebug()<<"tris des chuttes";
+         ///triage des bout de pieces brutes restants par ordre croissant
+            trierChuttes();
+            //qDebug()<<"tris des chuttes";
 
-            do///tant que le panneau ne rentre pas dans une chutte de plaque
+            do///tant que le débit ne rentre pas dans une chutte de pièce brute
             {
 
                  match_brut=false;
@@ -116,11 +117,11 @@ int Calculs::optimiser(ListeDebits *listeDbx)
                 ///on teste s'il reste de la matière
                 if(m_listeChuttes->at(0)->getLongueur()>0)
                 {
-                ///Recherche d'un panneau qui peut rentrer dans la chutte
+                ///Recherche d'un débit qui peut rentrer dans la chutte
                 no_pan=rechercher(m_listeChuttes->at(0)->getLargeur(),m_listeChuttes->at(0)->getLongueur());
                 }
 
-                if(no_pan != -1)/// si un panneau peut passer
+                if(no_pan != -1)/// si un débit peut passer
                 {
                     match_brut=true;
                 }
@@ -136,12 +137,13 @@ int Calculs::optimiser(ListeDebits *listeDbx)
 
 
 
-           if(match_brut)/// s'il y a une plaque qui passe dans l'un des deux cas
+           if(match_brut)/// s'il y a une pièce brute qui correspond à l'un des deux cas
            {
 
                ///phase de positionnement(nécessaire au dessin panneau/plaques)
 
                ///création des coordonnées du panneau dans la plaque
+
 
 
                 m_listeDebits->at(no_pan)->setPosX(m_listeChuttes->at(0)->getCoord_X());
@@ -233,15 +235,19 @@ int Calculs::optimiser(ListeDebits *listeDbx)
         }while(!all_optimise);
 
     }
+    //// pour finir on réinjecte les valeur dans la liste abstraite "communication QML"
 
-    qDebug()<<"fin optimisation";
+    for (int i=0;i<m_listeDebits->count();i++) {
+        qDebug()<<m_listeDebits->at(i)->getNumBrut();
+    }
+
+    listeDbx->setListe(m_listeDebits);
+
+
     return 0;
 }
 
-void Calculs::updateDebits()
-{
 
-}
 
 bool Calculs::testFormats()
 {
@@ -291,7 +297,7 @@ bool Calculs::testFormats()
 
         for(int i=0;i<m_listeDebits->count();i++){
             if(m_listeDebits->at(i)->getErreur()){sortie=false;}
-            qDebug()<<m_listeDebits->at(i)->getErreur()<<m_listeDebits->at(i)->getLargeur()<<m_listeDebits->at(i)->getLongueur();
+            //qDebug()<<m_listeDebits->at(i)->getErreur()<<m_listeDebits->at(i)->getLargeur()<<m_listeDebits->at(i)->getLongueur();
         }
 
         return sortie;
@@ -326,15 +332,13 @@ void Calculs::trierDebits()
 
 void Calculs::trierChuttes()
 {
-    qDebug()<<"tris de chuttes";
      QList<Brut *> *list=new QList<Brut *>;
-     list=m_listeChuttes;
+     *list<<*m_listeChuttes;
 
      Algorythm *alg=new Algorythm;
      ///creation d'une liste de _2values
      QList<_2values*> *tableau=new QList<_2values*>;
 
-     qDebug()<<"Algorythme et tableau de 2values créés";
 
      ///envoie des valeurs largeur et longueur dans un _2values
      for(int i=0;i<list->count();i++)
@@ -346,25 +350,20 @@ void Calculs::trierChuttes()
      }
      ///envoie de la liste dans l'algorythme de tri
      alg->setValues(tableau);
-     qDebug()<<"Valeurs triées dans l'algorythme";
      QList<int> indexs=alg->Trier(false);///recupération des index du tableau une fois trié
 
-    m_listeChuttes->clear();
+     m_listeChuttes->clear();
      ///mise en ordre de la liste suivant les index de tableau fournit
-     qDebug()<<"Mise en ordre liste suivant indexes";
      for(int i=0;i<indexs.count();i++){m_listeChuttes->append(list->at(indexs.at(i)));}
 
 
      ///suppression des plaque avec longueur 0
-     qDebug()<<"suppression plaques longueur = 0";
-     qDebug()<<m_listeChuttes->at(0);
      if(m_listeChuttes->at(0)->getLongueur()<=0.0){m_listeChuttes->removeFirst();}
-     qDebug()<<"sortie tris chuttes";
 }
 
 
 
-int Calculs::getNbreBruts() const{return m_nbreBruts;}
+int Calculs::getNbreBruts() {return m_nbreBruts;}
 void Calculs::setNbreBruts(int nbreBruts){m_nbreBruts = nbreBruts;}
 
 int Calculs::rechercher(int dim_x, int dim_y)

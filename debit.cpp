@@ -192,3 +192,10 @@ void ListeDebits::append(Debit *d)
 
 */
 }
+
+int ListeDebits::getNumBrut(int index){return m_liste->at(index)->getNumBrut();}
+int ListeDebits::getPosX(int index){return m_liste->at(index)->getPosX();}
+int ListeDebits::getPosY(int index){return m_liste->at(index)->getPosY();}
+QString ListeDebits::getNom(int index){return m_liste->at(index)->getNom();}
+double ListeDebits::getLargeur(int index){return m_liste->at(index)->getLargeur();}
+double ListeDebits::getLongueur(int index){return m_liste->at(index)->getLongueur();}

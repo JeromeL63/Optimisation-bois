@@ -91,7 +91,10 @@ Window {
             Separate.TableView{
                 Layout.preferredWidth: main_window.width/2
                 Layout.fillHeight: true
+
                 model: listeDebits
+                sortIndicatorVisible: true
+
                 Separate.TableViewColumn{
                     title:"N° prod"
                     role:"nom"
@@ -137,12 +140,15 @@ Window {
                     var isOptimised=calculs.optimiser(listeDebits)
                     console.log(isOptimised)
                     if(isOptimised == 2){console.log(calculs.getFormatDefautLargeur(),calculs.getFormatDefautLongueur())}
+                    schemas.requestPaint()
                 }
             }
 
         }
-        Item {
-            id: name
+        ZoneDessin{
+            id:schemas
+            Layout.fillHeight: true
+            Layout.fillWidth: true
         }
     }
 }

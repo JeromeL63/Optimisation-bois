@@ -52,7 +52,7 @@ public:
     void trierChuttes();
 
 
-    int getNbreBruts() const;
+    Q_INVOKABLE int getNbreBruts();
     void setNbreBruts(int nbreBruts);
 
     int rechercher(int dim_x,int dim_y);
