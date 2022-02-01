@@ -88,8 +88,10 @@ Window {
         anchors.fill: parent
         anchors.margins:5
         ColumnLayout{
+
+
             Separate.TableView{
-                Layout.preferredWidth: main_window.width/2
+                Layout.preferredWidth: 300
                 Layout.fillHeight: true
 
                 model: listeDebits
@@ -138,7 +140,6 @@ Window {
                 text:"Optimiser"
                 onClicked: {
                     var isOptimised=calculs.optimiser(listeDebits)
-                    console.log(isOptimised)
                     if(isOptimised == 2){console.log(calculs.getFormatDefautLargeur(),calculs.getFormatDefautLongueur())}
                     schemas.requestPaint()
                 }

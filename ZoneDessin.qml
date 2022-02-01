@@ -12,10 +12,11 @@ Canvas{
     property var coul_debits: Qt.rgba(1.0,0,0,0.4)
     property int offset_value:100
     property int margins: 5
+    property int h_text:12
     property double ech: 20
 
 
-    onPainted: {console.log("paint terminé")}
+    onPainted: {}
     onPaint: {
 
 
@@ -94,7 +95,11 @@ Canvas{
                         ctx.beginPath();
                         var txtx=py+(ldy/2);
                         var txty=px+(ldx/2) + offset;
-                        ctx.text("N° "+listeDebits.getNom(j)+" débit: "+listeDebits.getLongueur(j),txtx,txty+margins)
+                        //ctx.text("N° "+listeDebits.getNom(j)+" débit: "+listeDebits.getLongueur(j),txtx,txty+margins)
+                        ctx.text("N° "+listeDebits.getNom(j),txtx,txty+margins)
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.text(" débit: "+listeDebits.getLongueur(j),txtx,txty+margins+h_text)
                         ctx.stroke();
                     }
                 }

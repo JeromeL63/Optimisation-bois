@@ -55,6 +55,7 @@ void Calculs::createBrut(int numBrut)
 
 int Calculs::optimiser(ListeDebits *listeDbx)
 {
+    qDebug()<<"Calculs::optimiser";
     ////TODO
     /// utiliser setData de Liste Debit
     /// créer les setData
@@ -68,6 +69,7 @@ int Calculs::optimiser(ListeDebits *listeDbx)
 
     *m_listeDebits<<*listeDbx->getListe();
     ///reset des optimisations
+    qDebug()<<"nbre de pièces"<<m_listeDebits->count();
     for(int i=0;i<m_listeDebits->count();i++){m_listeDebits->at(i)->setOptimise(false);}
     ///vidage de la liste de pièces brutes
     m_listeBruts->clear();
@@ -97,13 +99,16 @@ int Calculs::optimiser(ListeDebits *listeDbx)
 
        do///tant que tous les débits ne sont pas optimisés
        {
-            int no_pan=-1;
+            int no_deb=-1;
            // qDebug()<<"Plaque "<<nbreplaques<<" reste :"<<m_listeChuttes->at(0)->getLong()<<"mm";
 
 
          ///triage des bout de pieces brutes restants par ordre croissant
             trierChuttes();
-            //qDebug()<<"tris des chuttes";
+            qDebug()<<"liste des plaques";
+            for(int z=0;z<m_listeChuttes->count();z++){
+                qDebug()<<m_listeChuttes->at(z)->getLargeur()<<"x"<<m_listeChuttes->at(z)->getLongueur()<<m_listeChuttes->at(z)->getCoord_X()<<"|"<<m_listeChuttes->at(z)->getCoord_Y();
+            }
 
             do///tant que le débit ne rentre pas dans une chutte de pièce brute
             {
@@ -118,12 +123,13 @@ int Calculs::optimiser(ListeDebits *listeDbx)
                 if(m_listeChuttes->at(0)->getLongueur()>0)
                 {
                 ///Recherche d'un débit qui peut rentrer dans la chutte
-                no_pan=rechercher(m_listeChuttes->at(0)->getLargeur(),m_listeChuttes->at(0)->getLongueur());
+                no_deb=rechercher(m_listeChuttes->at(0)->getLargeur(),m_listeChuttes->at(0)->getLongueur());
                 }
 
-                if(no_pan != -1)/// si un débit peut passer
+                if(no_deb != -1)/// si un débit peut passer
                 {
                     match_brut=true;
+                    qDebug()<<"---------"<<m_listeDebits->at(no_deb)->getNom()<<"passe dans "<<m_listeChuttes->at(0)->getLargeur()<<m_listeChuttes->at(0)->getLongueur();
                 }
                 ///sinon on supprime la chutte de la liste
                 else
@@ -137,6 +143,7 @@ int Calculs::optimiser(ListeDebits *listeDbx)
 
 
 
+
            if(match_brut)/// s'il y a une pièce brute qui correspond à l'un des deux cas
            {
 
@@ -144,33 +151,39 @@ int Calculs::optimiser(ListeDebits *listeDbx)
 
                ///création des coordonnées du panneau dans la plaque
 
-
-
-                m_listeDebits->at(no_pan)->setPosX(m_listeChuttes->at(0)->getCoord_X());
-                m_listeDebits->at(no_pan)->setPosY(m_listeChuttes->at(0)->getCoord_Y());
-                //qDebug()<<"Panneau "<<m_listeDebits->at(no_pan)->getNom()<<" X:"<<m_listeDebits->at(no_pan)->getPosX()<<"|Y:"<<m_listeDebits->at(no_pan)->getPosY();
+                m_listeDebits->at(no_deb)->setPosX(m_listeChuttes->at(0)->getCoord_X());
+                m_listeDebits->at(no_deb)->setPosY(m_listeChuttes->at(0)->getCoord_Y());
+                qDebug()<<"Panneau "<<m_listeDebits->at(no_deb)->getNom()<<" X:"<<m_listeDebits->at(no_deb)->getPosX()<<"|Y:"<<m_listeDebits->at(no_deb)->getPosY();
                 //qDebug()<<m_listeDebits->at(no_pan)->getLarg()<<" x "<<m_listeDebits->at(no_pan)->getLong();
 
 
 
                 ///phase de découpe/////////////
 
-                ///si la largeur du panneau est inf à la plaque
-                ///découpe en deux partie
-                if(m_listeDebits->at(no_pan)->getLargeur()<m_listeChuttes->at(0)->getLargeur())
+
+                ///si la largeur/longueur du panneau est inf à la plaque
+                ///
+                if(m_listeDebits->at(no_deb)->getLargeur()<=m_listeChuttes->at(0)->getLargeur())
                 {
 
+                    ///découpe en deux partie
 
-                    ///on crée les coordonnées de la plaque de droite
-                    x=m_listeChuttes->at(0)->getCoord_X()+m_listeDebits->at(no_pan)->getLargeur()+m_ep_scie;
-                    y=m_listeDebits->at(no_pan)->getPosY();
+                    ///on crée les coordonnées de l'emplacement libre
+                    //x=m_listeChuttes->at(0)->getCoord_X()+m_listeDebits->at(no_pan)->getLargeur()+m_ep_scie;
+                    //y=m_listeDebits->at(no_pan)->getPosY();
+                    x=m_listeDebits->at(no_deb)->getPosX();
+                    y=m_listeChuttes->at(0)->getCoord_Y()+m_listeDebits->at(no_deb)->getLongueur()+m_ep_scie;
 
 
 
-                    ///on crée une plaque à droite
-                    double largPlaque=m_listeChuttes->at(0)->getLargeur()-m_listeDebits->at(no_pan)->getLargeur()-m_ep_scie;
+                    ///on modifie l'emplacement libre du brut
+                    //double largPlaque=m_listeChuttes->at(0)->getLargeur()-m_listeDebits->at(no_pan)->getLargeur()-m_ep_scie;
+                    //double longPlaque=m_listeDebits->at(no_pan)->getLongueur();
+                    double largPlaque= m_listeDebits->at(no_deb)->getLargeur();
+                    double longPlaque=m_listeChuttes->at(0)->getLongueur()-m_listeDebits->at(no_deb)->getLongueur()-m_ep_scie;
+                    qDebug()<<"modif emplacement libre"<<largPlaque<<"x"<<longPlaque;
 
-                    double longPlaque=m_listeDebits->at(no_pan)->getLongueur();
+
                     int no_plaque=m_listeChuttes->at(0)->getNumBrut();
 
                     Brut *pl=new Brut(largPlaque,longPlaque,0,no_plaque);
@@ -179,17 +192,38 @@ int Calculs::optimiser(ListeDebits *listeDbx)
 
 
 
-                    ///on modifie la longueur de la plaque du bas
-                    y=m_listeChuttes->at(0)->getCoord_Y()+m_listeDebits->at(no_pan)->getLongueur()+m_ep_scie;
-                    m_listeChuttes->at(0)->setCoord_X(m_listeChuttes->at(0)->getCoord_X());
-                    m_listeChuttes->at(0)->setCoord_Y(y);
+                    ///on modifie le format de la plaque du bas
 
-                    m_listeChuttes->at(0)->setLongueur(m_listeChuttes->at(0)->getLongueur()-longPlaque-m_ep_scie);
-                    //qDebug()<<"longueur restante "<<m_listeChuttes->at(0)->getLong();
 
-                    ///ajout de la plaque de droite dans la liste de chuttes
+                    //y=m_listeChuttes->at(0)->getCoord_Y()+m_listeDebits->at(no_pan)->getLongueur()+m_ep_scie;
+                    //m_listeChuttes->at(0)->setCoord_Y(y);
+                    x=m_listeChuttes->at(0)->getCoord_X()+m_listeDebits->at(no_deb)->getLargeur()+m_ep_scie;
+                    m_listeChuttes->at(0)->setCoord_X(x);
+
+                   // m_listeChuttes->at(0)->setCoord_X(m_listeChuttes->at(0)->getCoord_X());
+
+                    /// Màj 2021 : on modifie seulement si le brut n'a jamais été coupé
+                    if(m_listeChuttes->at(0)->getLongueur() == formatDefaut->getLongueur())
+                    {
+                       // qDebug()<<"plaque "<<m_listeChuttes->at(0)->getNumBrut()<<m_listeChuttes->at(0)->getLargeur()<<"x"<<m_listeChuttes->at(0)->getLongueur();
+                       // m_listeChuttes->at(0)->setLongueur(m_listeChuttes->at(0)->getLongueur()-longPlaque-m_ep_scie);
+                        m_listeChuttes->at(0)->setLargeur(m_listeChuttes->at(0)->getLargeur()-largPlaque-m_ep_scie);
+                    }
+
+                    qDebug()<<"plaque "<<m_listeChuttes->at(0)->getNumBrut()<<m_listeChuttes->at(0)->getLargeur()<<"x"<<m_listeChuttes->at(0)->getLongueur()<<m_listeChuttes->at(0)->getCoord_X()<<";"<<m_listeChuttes->at(0)->getCoord_Y();
+
+
+
+                    ///suppression de la plaque existante et ajout de la nouvelle chutte créée
+
+                    if(m_listeChuttes->at(0)->getLongueur() != m_longFormat){
+                        m_listeChuttes->removeFirst();
+                    }
+
                     m_listeChuttes->append(pl);
+
                     deuxieme_part=true;
+                    qDebug()<<"plaque "<<pl->getNumBrut()<<pl->getLargeur()<<"x"<<pl->getLongueur()<<pl->getCoord_X()<<";"<<pl->getCoord_Y();
                 }
 
 
@@ -198,26 +232,27 @@ int Calculs::optimiser(ListeDebits *listeDbx)
                 {
                     ///on soustrait la longueur du panneau à la plaque + épaisseur du trait de scie
 
-                    y=m_listeChuttes->at(0)->getCoord_Y()+m_listeDebits->at(no_pan)->getLongueur()+m_ep_scie;
+                    y=m_listeChuttes->at(0)->getCoord_Y()+m_listeDebits->at(no_deb)->getLongueur()+m_ep_scie;
                     m_listeChuttes->at(0)->setCoord_X(m_listeChuttes->at(0)->getCoord_X());
                     m_listeChuttes->at(0)->setCoord_Y(y);
 
                     double nouvelleLong=0.0;
-                    nouvelleLong=m_listeChuttes->at(0)->getLongueur()-m_listeDebits->at(no_pan)->getLongueur()-m_ep_scie;
+                    nouvelleLong=m_listeChuttes->at(0)->getLongueur()-m_listeDebits->at(no_deb)->getLongueur()-m_ep_scie;
                     m_listeChuttes->at(0)->setLongueur(nouvelleLong);
-                    //qDebug()<<"Plaque après découpe:"<<m_listeChuttes->at(0)->getNumPlaque()<<"Lg :"<<m_listeChuttes->at(0)->getLong();
+                    qDebug()<<"Plaque après découpe:"<<m_listeChuttes->at(0)->getNumBrut()<<"Lg :"<<m_listeChuttes->at(0)->getLongueur();
                 }
 
 
 
                 ///atribution n° plaque au panneau
-                m_listeDebits->at(no_pan)->setNumBrut(m_listeChuttes->at(0)->getNumBrut());
-                m_listeDebits->at(no_pan)->setOptimise(true);
+                m_listeDebits->at(no_deb)->setNumBrut(m_listeChuttes->at(0)->getNumBrut());
+                m_listeDebits->at(no_deb)->setOptimise(true);
 
                 ///si l'épaisseur du trait de scie donne une valeur négative, on ramène la valeur à 0
-                if(m_listeChuttes->at(0)->getLongueur()<=0)
+             /*   if(m_listeChuttes->at(0)->getLongueur()<=0)
                 {
-                    m_listeChuttes->at(0)->setLongueur(0);}
+                    m_listeChuttes->at(0)->setLongueur(0);
+                }*/
 
            }
 
