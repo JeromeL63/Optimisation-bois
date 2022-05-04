@@ -144,12 +144,21 @@ Window {
                     schemas.requestPaint()
                 }
             }
-
         }
+
         ZoneDessin{
             id:schemas
             Layout.fillHeight: true
+            Layout.preferredHeight: 800
+            Layout.preferredWidth: main_window.width /2.0
+
             Layout.fillWidth: true
         }
+
+
+
+
+
     }
+
 }

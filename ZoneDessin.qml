@@ -8,8 +8,8 @@ Canvas{
     onCanvasSizeChanged: markDirty()
     property variant ctx
     property variant ctx2
-    property var coul_bruts: Qt.rgba(100/255,220/255,80/255,1)
-    property var coul_debits: Qt.rgba(1.0,0,0,0.4)
+    property color coul_bruts: Qt.rgba(100/255,220/255,80/255,1)
+    property color coul_debits: Qt.rgba(1.0,0,0,0.4)
     property int offset_value:100
     property int margins: 5
     property int h_text:12
@@ -114,9 +114,12 @@ Canvas{
                 offset=offset + ly + margins
                 ctx.fillRect(0,0,lx,ly);
             }
+            console.log("offset:",offset)
             //création de la pièce brute
 
 
         }
+        ///A La fin de la boucle, on règle la hauteur du canvas avec le offset
+        rendu.height=offset
     }
 }
